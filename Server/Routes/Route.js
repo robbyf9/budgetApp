@@ -7,9 +7,9 @@ route.get('/', (req, res) => {
     res.send("Budget App");
 })
 
-route.get('/income', incomeController.find)
-route.post('/add-income', incomeController.create)
-route.put('/update-income', incomeController.update)
-route.delete('/delete-income', incomeController.delete)
+route.get('/api/income', incomeController.find)
+route.post('/api/add-income', incomeController.create)
+route.put('/api/update-income/:id', incomeController.update)
+route.delete('/api/delete-income/:id', incomeController.delete)
 
 module.exports = route

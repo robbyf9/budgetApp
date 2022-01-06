@@ -1,17 +1,19 @@
 const mongoose = require('mongoose');
 
 let scheme = new mongoose.Schema({
-    name:{
-        type:String,
+    income_date:{
+        type:Date,
         required:true
     },
-    email:{
+    income:{
         type:String,
         required:true,
-        unique:true
     },
-    gender:String,
-    status:String
+    amount:{
+        type:Number,
+        required:true
+    },
+    notes:String
 
 })
 
