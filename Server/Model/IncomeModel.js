@@ -2,16 +2,17 @@ const mongoose = require('mongoose');
 
 let scheme = new mongoose.Schema({
     income_date:{
-        type:Date,
-        required:true
+        type: Date,
+        required: true
     },
     income:{
-        type:String,
-        required:true,
+        type: String,
+        required: true,
+        unique: true
     },
     amount:{
-        type:Number,
-        required:true
+        type: Number,
+        required: true
     },
     notes:String
 

@@ -1,4 +1,4 @@
-let incomeModel = require('../Model/IncomeModel')
+let expensesModel = require('../Model/ExpensesModel')
 
 exports.create = (req, res) => {
     if (!req.body) {
@@ -6,15 +6,15 @@ exports.create = (req, res) => {
         return;
     }
 
-    const income = new incomeModel({
-        income: req.body.income,
-        income_date: req.body.income_date,
+    const expenses = new expensesModel({
+        expenses: req.body.expenses,
+        expenses_date: req.body.expenses_date,
         amount: req.body.amount,
         notes: req.body.notes
     })
 
-    income
-        .save(income)
+    expenses
+        .save(expenses)
         .then(data => {
             res.send(data)
         })
@@ -31,19 +31,19 @@ exports.update = (req, res) => {
 
     const id = req.params.id
 
-    incomeModel.findByIdAndUpdate(id, req.body, { useFindAndModify:false })
+    expensesModel.findByIdAndUpdate(id, req.body, { useFindAndModify:false })
         .then(data => {
             if(!data){
-                res.status(404).send({ message: `Cannot update income with ${id}. Maybe income not found!` })
+                res.status(404).send({ message: `Cannot update expenses with ${id}. Maybe expenses not found!` })
             }else{
                 res.send({
-                    message: "Income updated sucessfully!"
+                    message: "Expenses updated sucessfully!"
                 })
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occured while update income data."
+                message: err.message || "Some error occured while update expenses data."
             })
         })
 }
@@ -52,23 +52,23 @@ exports.find = (req, res) => {
     const id = req.query.id
 
     if(id){
-        incomeModel.findById(id)
-            .then(data => {
-                res.send(data)
+        expensesModel.findById(id)
+            .then(user => {
+                res.send(user)
             })
             .catch(err => {
                 res.status(500).send({
-                    message: err.message || "Oops! Something Happened While Get Income Data."
+                    message: err.message || "Oops! Something Happened While Get Expenses Data."
                 })
             })
     } else {
-        incomeModel.find()
-            .then(data => {
-                res.send(data);
+        expensesModel.find()
+            .then(user => {
+                res.send(user);
             })
             .catch(err => {
                 res.status(500).send({
-                    message: err.message || "Oops! Something Happened While Get Income Data."
+                    message: err.message || "Oops! Something Happened While Get Expenses Data."
                 })
             })
     }
@@ -77,19 +77,19 @@ exports.find = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id
 
-    incomeModel.findByIdAndDelete(id)
+    expensesModel.findByIdAndDelete(id)
         .then(data => {
             if(!data){
-                res.status(404).send({ message: `Cannot delete income with ${id}. Maybe id is wrong!` })
+                res.status(404).send({ message: `Cannot delete expenses with ${id}. Maybe id is wrong!` })
             }else{
                 res.send({
-                    message: "Income deleted sucessfully!"
+                    message: "Expenses deleted sucessfully!"
                 })
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occured while delete income data."
+                message: err.message || "Some error occured while delete expenses data."
             })
         })
 }
