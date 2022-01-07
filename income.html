@@ -8,30 +8,227 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
     <div id="app">
-        <h5>Hello Vue</h5>
+        <div class="container">
+            <div class="header">
+                <h2 id="title">Budget App</h2>
+            </div>
+            <div class="nav-bar">
+                <ul>
+                    <li><a href="/income.html" class="btn btn-secondary"> Income</a></li>
+                    <li><a href="/expenses.html" class="btn btn-secondary"> Expenses</a></li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="content">
+                    <h4 id="title"> Data Income </h4>
+                    <hr>
+                    <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#modalAdd">Add Income</button>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark text-center">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Date</th>
+                                    <th>Income</th>
+                                    <th>Note</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataIncome">
+                                
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-right" colspan="4">Total</td>
+                                    <td class="text-right" id="totalIncome"></td>
+                                    <td class="text-right"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add Income</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="saveIncome" id="formAdd">
+                        <div class="form-group">
+                          <label for="date">Income Date</label>
+                          <input v-model="formAdd.income_date" type="date" class="form-control" id="date">
+                        </div>
+                        <div class="form-group">
+                          <label for="income">Income</label>
+                          <input v-model="formAdd.income" type="text" class="form-control" id="income">
+                        </div>
+                        <div class="form-group">
+                            <label for="note">Note</label>
+                            <textarea v-model="formAdd.notes" class="form-control" id="note" cols="10" rows="5"> </textarea>
+                        </div>
+                        <div class="form-group">
+                          <label for="amount">Amount</label>
+                          <input v-model="formAdd.amount" type="number" class="form-control" min="1" id="amount">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Close</button>
+                  <button type="submit" form="formAdd" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit Income</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="editIncome" id="formEdit">
+                        <input type="hidden" v-model="formEdit.id">
+                        <div class="form-group">
+                          <label for="date">Income Date</label>
+                          <input v-model="formEdit.income_date" type="date" class="form-control" id="date">
+                        </div>
+                        <div class="form-group">
+                          <label for="income">Income</label>
+                          <input v-model="formEdit.income" type="text" class="form-control" id="income">
+                        </div>
+                        <div class="form-group">
+                            <label for="note">Note</label>
+                            <textarea v-model="formEdit.notes" class="form-control" id="note" cols="10" rows="5"> </textarea>
+                        </div>
+                        <div class="form-group">
+                          <label for="amount">Amount</label>
+                          <input v-model="formEdit.amount" type="number" class="form-control" min="1" id="amount">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-close" data-dismiss="modal">Close</button>
+                  <button type="submit" form="formEdit" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
 <script>
     let apiUrl = 'http://localhost:3000/api'
 
-    new Vue({
+    let vm = new Vue({
         el: '#app',
         data: {
-            
+            formAdd: {
+                income_date: '',
+                income: '',
+                amount: '',
+                notes: ''
+            },
+            formEdit: {
+                id: '',
+                income_date: '',
+                income: '',
+                amount: '',
+                notes: ''
+            }
         },
         mounted() {
             this.loadDataIncome();
         },
         methods:{
-            loadDataIncome(){
+            loadDataIncome() {
                 axios.get(`${apiUrl}/income`)
-                    .then((res) =>(
-                        console.log(res)
-                    ))
+                    .then((res) => {
+                        let html = '';
+                        let totalIncome = 0;
+
+                        res.data.forEach((value, index) => {
+                            html += `
+                                <tr>
+                                        <td>${++index}</td>
+                                        <td>${new Date(value.income_date).toLocaleDateString('id')}</td>
+                                        <td>${value.income}</td>
+                                        <td>${value.notes}</td>
+                                        <td class="text-right">Rp. ${value.amount}</td>
+                                        <td>
+                                            <button class="btn btn-warning" onclick="vm.loadEditData('${value._id}', '${value.income_date}', '${value.income}', '${value.notes}', ${value.amount})" data-toggle="modal" data-target="#modalEdit"> Edit</button>
+                                            <button class="btn btn-danger" onclick="vm.deleteIncome('${value._id}')"> Delete</button>
+                                        </td>
+                                </tr>
+                            `;
+                            totalIncome += value.amount
+                        })
+
+                        document.getElementById('dataIncome').innerHTML = html
+                        document.getElementById('totalIncome').innerHTML = 'Rp. ' + totalIncome 
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                    })
+            },
+
+            loadEditData(id, income_date, income, notes, amount) {
+                this.formEdit.id = id,
+                this.formEdit.income_date = new Date(income_date).toISOString().split('T')[0],
+                this.formEdit.income = income,
+                this.formEdit.notes = notes,
+                this.formEdit.amount = amount
+            },
+
+            saveIncome() {
+                axios.post(`${apiUrl}/add-income`, this.formAdd)
+                    .then((res) => {
+                        this.loadDataIncome();
+                        $('#modalAdd').modal('hide');
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                    })
+            },
+
+            editIncome() {
+                axios.put(`${apiUrl}/update-income/${this.formEdit.id}`, this.formEdit)
+                    .then((res) => {
+                        this.loadDataIncome();
+                        $('#modalEdit').modal('hide');
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                    })
+            },
+
+            deleteIncome(id) {
+                axios.delete(`${apiUrl}/delete-income/${id}`)
+                    .then((res) => {
+                        this.loadDataIncome();
+                    })
                     .catch((err) => {
                         console.log(err.message);
                     })
