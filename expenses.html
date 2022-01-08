@@ -30,11 +30,11 @@
             </div>
             <div class="card">
                 <div class="content">
-                    <h4 id="title"> Data Income </h4>
+                    <h4 id="title"> Data Expenses </h4>
                     <hr>
                     <div class="row">
                         <div class="col-2">
-                            <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#modalAdd">Add Income</button>
+                            <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#modalAdd">Add Expenses</button>
                         </div>
                         <div class="ml-auto mr-5">
                             <h5 id="balance"></h5>
@@ -47,19 +47,19 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Date</th>
-                                    <th>Income</th>
+                                    <th>Expenses</th>
                                     <th>Note</th>
                                     <th>Amount</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="dataIncome">
+                            <tbody id="dataExpenses">
                                 
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td class="text-right" colspan="4">Total</td>
-                                    <td class="text-right" id="totalIncome"></td>
+                                    <td class="text-right" id="totalExpenses"></td>
                                     <td class="text-right"></td>
                                 </tr>
                             </tfoot>
@@ -73,20 +73,20 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Add Income</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Add Expenses</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form @submit.prevent="saveIncome" id="formAdd">
+                    <form @submit.prevent="saveExpenses" id="formAdd">
                         <div class="form-group">
-                          <label for="date">Income Date</label>
-                          <input v-model="formAdd.income_date" type="date" class="form-control" id="date">
+                          <label for="date">Expenses Date</label>
+                          <input v-model="formAdd.expenses_date" type="date" class="form-control" id="date">
                         </div>
                         <div class="form-group">
-                          <label for="income">Income</label>
-                          <input v-model="formAdd.income" type="text" class="form-control" id="income">
+                          <label for="expenses">Expenses</label>
+                          <input v-model="formAdd.expenses" type="text" class="form-control" id="expenses">
                         </div>
                         <div class="form-group">
                             <label for="note">Note</label>
@@ -110,21 +110,21 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Edit Income</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Edit Expenses</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form @submit.prevent="editIncome" id="formEdit">
+                    <form @submit.prevent="editExpenses" id="formEdit">
                         <input type="hidden" v-model="formEdit.id">
                         <div class="form-group">
-                          <label for="date">Income Date</label>
-                          <input v-model="formEdit.income_date" type="date" class="form-control" id="date">
+                          <label for="date">Expenses Date</label>
+                          <input v-model="formEdit.expenses_date" type="date" class="form-control" id="date">
                         </div>
                         <div class="form-group">
-                          <label for="income">Income</label>
-                          <input v-model="formEdit.income" type="text" class="form-control" id="income">
+                          <label for="expenses">Expenses</label>
+                          <input v-model="formEdit.expenses" type="text" class="form-control" id="expenses">
                         </div>
                         <div class="form-group">
                             <label for="note">Note</label>
@@ -156,65 +156,64 @@
         el: '#app',
         data: {
             formAdd: {
-                income_date: '',
-                income: '',
+                expenses_date: '',
+                expenses: '',
                 amount: '',
                 notes: ''
             },
             formEdit: {
                 id: '',
-                income_date: '',
-                income: '',
+                expenses_date: '',
+                expenses: '',
                 amount: '',
                 notes: ''
-            }
+            },
         },
         mounted() {
-            this.getTotalExpenses();
-            this.loadDataIncome();
+            this.getTotalIncome();
+            this.loadDataExpenses();
         },
         methods:{
-            getTotalExpenses() {
-                let totalExpenses = 0;
-                axios.get(`${apiUrl}/total-expenses`)
+
+            getTotalIncome() {
+                axios.get(`${apiUrl}/total-income`)
                     .then((res) => {
-                        this.$totalExpenses = res.data.total
+                        this.$totalIncome = res.data.total
+
                     })
                     .catch((err) => {
                         console.log(err.message);
                     })
-                
             },
 
-            loadDataIncome() {
-                axios.get(`${apiUrl}/income`)
+            loadDataExpenses() {
+                axios.get(`${apiUrl}/expenses`)
                     .then((res) => {
                         let html = '';
-                        let totalIncome = 0;
-
+                        let totalExpenses = 0;
                         res.data.forEach((value, index) => {
                             html += `
                                 <tr>
                                         <td>${++index}</td>
-                                        <td>${new Date(value.income_date).toLocaleDateString('id')}</td>
-                                        <td>${value.income}</td>
+                                        <td>${new Date(value.expenses_date).toLocaleDateString('id')}</td>
+                                        <td>${value.expenses}</td>
                                         <td>${value.notes}</td>
                                         <td class="text-right">Rp. ${value.amount}</td>
                                         <td>
-                                            <button class="btn btn-warning" onclick="vm.loadEditData('${value._id}', '${value.income_date}', '${value.income}', '${value.notes}', ${value.amount})" data-toggle="modal" data-target="#modalEdit"> Edit</button>
-                                            <button class="btn btn-danger" onclick="vm.deleteIncome('${value._id}')"> Delete</button>
+                                            <button class="btn btn-warning" onclick="vm.loadEditData('${value._id}', '${value.expenses_date}', '${value.expenses}', '${value.notes}', ${value.amount})" data-toggle="modal" data-target="#modalEdit"> Edit</button>
+                                            <button class="btn btn-danger" onclick="vm.deleteExpenses('${value._id}')"> Delete</button>
                                         </td>
                                 </tr>
                             `;
-                            totalIncome += value.amount
+                            totalExpenses += value.amount
                         })
 
-                        this.$totalIncome = parseInt(this.$totalIncome)
+                        this.$totalExpenses = parseInt(totalExpenses)
 
-                        this.$balance = parseInt(totalIncome) - parseInt(this.$totalExpenses)
+                        this.$balance = parseInt(this.$totalIncome) - parseInt(totalExpenses)
 
-                        document.getElementById('dataIncome').innerHTML = html
-                        document.getElementById('totalIncome').innerHTML = 'Rp. ' + totalIncome 
+                        document.getElementById('dataExpenses').innerHTML = html
+                        document.getElementById('totalExpenses').innerHTML = 'Rp. ' + this.$totalExpenses 
                         document.getElementById('balance').innerHTML = 'Rp. ' + this.$balance 
                     })
                     .catch((err) => {
@@ -222,18 +221,18 @@
                     })
             },
 
-            loadEditData(id, income_date, income, notes, amount) {
+            loadEditData(id, expenses_date, expenses, notes, amount) {
                 this.formEdit.id = id,
-                this.formEdit.income_date = new Date(income_date).toISOString().split('T')[0],
-                this.formEdit.income = income,
+                this.formEdit.expenses_date = new Date(expenses_date).toISOString().split('T')[0],
+                this.formEdit.expenses = expenses,
                 this.formEdit.notes = notes,
                 this.formEdit.amount = amount
             },
 
-            saveIncome() {
-                axios.post(`${apiUrl}/add-income`, this.formAdd)
+            saveExpenses() {
+                axios.post(`${apiUrl}/add-expenses`, this.formAdd)
                     .then((res) => {
-                        this.loadDataIncome();
+                        this.loadDataExpenses();
                         $('#modalAdd').modal('hide');
                     })
                     .catch((err) => {
@@ -241,10 +240,10 @@
                     })
             },
 
-            editIncome() {
-                axios.put(`${apiUrl}/update-income/${this.formEdit.id}`, this.formEdit)
+            editExpenses() {
+                axios.put(`${apiUrl}/update-expenses/${this.formEdit.id}`, this.formEdit)
                     .then((res) => {
-                        this.loadDataIncome();
+                        this.loadDataExpenses();
                         $('#modalEdit').modal('hide');
                     })
                     .catch((err) => {
@@ -252,10 +251,10 @@
                     })
             },
 
-            deleteIncome(id) {
-                axios.delete(`${apiUrl}/delete-income/${id}`)
+            deleteExpenses(id) {
+                axios.delete(`${apiUrl}/delete-expenses/${id}`)
                     .then((res) => {
-                        this.loadDataIncome();
+                        this.loadDataExpenses();
                     })
                     .catch((err) => {
                         console.log(err.message);
