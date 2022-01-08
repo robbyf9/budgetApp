@@ -17,6 +17,7 @@ app.use(cors());
 connectDb();
 
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 app.use('/', require('./Server/Routes/Route'))
 

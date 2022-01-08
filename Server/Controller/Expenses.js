@@ -74,6 +74,22 @@ exports.find = (req, res) => {
     }
 }
 
+exports.total_expenses = (req, res) => {
+    expensesModel.find()
+            .then(data => {
+                let total_expenses = 0;
+                data.forEach(value => {
+                    total_expenses += value.amount
+                });
+                res.status(200).send({ total: total_expenses});
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "Oops! Something Happened While Get Income Data."
+                })
+            })
+}
+
 exports.delete = (req, res) => {
     const id = req.params.id
 

@@ -9,11 +9,13 @@ route.get('/', (req, res) => {
 })
 
 route.get('/api/income', incomeController.find)
+route.get('/api/total-income', incomeController.total_income)
 route.post('/api/add-income', incomeController.create)
 route.put('/api/update-income/:id', incomeController.update)
 route.delete('/api/delete-income/:id', incomeController.delete)
 
 route.get('/api/expenses', expensesController.find)
+route.get('/api/total-expenses', expensesController.total_expenses)
 route.post('/api/add-expenses', expensesController.create)
 route.put('/api/update-expenses/:id', expensesController.update)
 route.delete('/api/delete-expenses/:id', expensesController.delete)
